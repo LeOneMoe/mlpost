@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from mostlikes import views
+
 
 urlpatterns = [
+    url(r'^api/mlpost', views.MLPostView),
+    url(r'^', views.IndexView),
     url(r'^admin/', admin.site.urls),
 ]
