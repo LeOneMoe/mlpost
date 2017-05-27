@@ -1,23 +1,30 @@
+from django.http import HttpResponse
+from .processor import parser_
+from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import render
-import requests
-import json
-import datetime
-
 
 # Create your views here.
 
 def IndexView(request):
-    print(request.GET['id'])
-    print(request.GET['time'])
+    output = "HELLO"
     return render(request, "index.html", locals())
 
 
 def MLPostView(request):
 
-    wall_name = request.GET["id"]
-    posts_date = int(request.GET["time"])
+    try:
+        wall_name = request.GET["id"]
+        posts_date = int(request.GET["days"])
 
-    posts = requests.get(
+    except MultiValueDictKeyError:
+        output = "Not or invalid input data, try http://127.0.0.1:8000/api/mlpost?id={wall_id}ch&days={days}"
+        return render(request, "index.html", locals())
+
+    return HttpResponse(parser_.main(wall_name, posts_date), content_type="application/json")
+
+
+
+"""posts = requests.get(
         "https://api.vk.com/method/wall.get?domain={0}&count=10000&extended=1".format(wall_name)).text
     posts = json.loads(posts)["response"]["wall"]
     posts = posts[1: len(posts)]
@@ -32,10 +39,11 @@ def MLPostView(request):
                 most_likes = post["likes"]["count"]
                 wall_id = post["from_id"]
                 post_id = post["id"]
-                post_date = datetime.datetime.fromtimestamp(post["date"])
+                post_text = post["text"]
 
-                output_link = "https://vk.com/wall{0}_{1}".format(wall_id, post_id)
+    output_link = "https://vk.com/wall{0}_{1}".format(wall_id, post_id)
 
-    output = json.dumps({"link": output_link, "likes_count": most_likes})
+    output = json.dumps({"link": output_link, "likes_count": most_likes, "text": str(post_text)},
+                        indent=4, sort_keys=True)
 
-    return render(request, "index.html", locals())
+    return HttpResponse(output, content_type="application/json")"""

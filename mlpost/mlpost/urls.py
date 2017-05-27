@@ -19,7 +19,7 @@ from mostlikes import views
 
 
 urlpatterns = [
-    url(r'^api/mlpost', views.MLPostView),
-    url(r'^', views.IndexView),
+    url('api/mlpost', views.MLPostView),
+    url(r'^$', views.IndexView),
     url(r'^admin/', admin.site.urls),
 ]
