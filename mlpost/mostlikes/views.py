@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from .processor import parser_
 from django.utils.datastructures import MultiValueDictKeyError
 from django.shortcuts import render
+import json
 
 # Create your views here.
 
@@ -17,10 +18,12 @@ def MLPostView(request):
         posts_date = int(request.GET["days"])
 
     except MultiValueDictKeyError:
-        output = "Not or invalid input data, try http://127.0.0.1:8000/api/mlpost?id={wall_id}ch&days={days}"
-        return render(request, "index.html", locals())
+        output = json.dumps({"error":"Не введены или отсутствуют входные данные, попробуйте: "
+                            "http://127.0.0.1:8000/api/mlpost?id={идентификатор стены}ch&days={кол-во дней}"},
+                            indent=4, sort_keys=True)
+        return HttpResponse(output, content_type="application/json", status=400)
 
-    return HttpResponse(parser_.main(wall_name, posts_date), content_type="application/json")
+    return HttpResponse(parser_.main(wall_name, posts_date), content_type="application/json", status=200)
 
 
 
