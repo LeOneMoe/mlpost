@@ -6,7 +6,8 @@ import json
 
 
 NO_CONTENT = "Не введены входные данные, попробуйте: " \
-             "http://127.0.0.1:8000/api/mlpost?id={идентификатор стены}ch&days={кол-во дней}"
+             "http://127.0.0.1:8000/api/mlpost?id=" \
+             "{идентификатор стены}ch&days={кол-во дней}"
 INVALID_CONTENT = "Введены непрвильные данные"
 
 NO_CONTENT_CODE = 204
@@ -32,7 +33,10 @@ def MLPostView(request):
             sort_keys=True
         )
 
-        return HttpResponse(output, content_type="application/json", status=NO_CONTENT_CODE)
+        return HttpResponse(output,
+                            content_type="application/json",
+                            status=NO_CONTENT_CODE
+                            )
 
     if parser.main(wall_name, posts_date) == -1:
         output = json.dumps(
@@ -41,6 +45,12 @@ def MLPostView(request):
             sort_keys=True
         )
 
-        return HttpResponse(output, content_type="application/json", status=INVALID_CONTENT_CODE)
+        return HttpResponse(output,
+                            content_type="application/json",
+                            status=INVALID_CONTENT_CODE
+                            )
 
-    return HttpResponse(parser.main(wall_name, posts_date), content_type="application/json", status=OK_CODE)
+    return HttpResponse(parser.main(wall_name, posts_date),
+                        content_type="application/json",
+                        status=OK_CODE
+                        )
