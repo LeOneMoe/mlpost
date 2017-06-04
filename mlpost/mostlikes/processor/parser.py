@@ -39,32 +39,33 @@ def search(posts, posts_date):
 
 def getter(wall_name, posts_date):
 
-    try:
-        posts = []
+    posts = []
 
-        last_post_date = datetime.datetime.now()
+    last_post_date = datetime.datetime.now()
 
-        offset = 0
+    offset = 0
 
-        while (datetime.datetime.now() - last_post_date).days < posts_date:
+    while (datetime.datetime.now() - last_post_date).days < posts_date:
+
+        parameters = {"domain": wall_name, "count": 10000000, "extended": 1, "offset": offset}
+
+        try:
+
             temp_posts = requests.get(
-                "https://api.vk.com/method/wall.get?domain={0}&count=1000000"
-                "&extended=1&offset={1}".format(
-                    wall_name, offset)).json()
+                "https://api.vk.com/method/wall.get", params=parameters).json()
             temp_posts = temp_posts["response"]["wall"]
             temp_posts = temp_posts[1: len(temp_posts)]
 
-            posts.extend(temp_posts)
+        except KeyError:
+            return -1
 
-            offset += 100
+        posts.extend(temp_posts)
 
-            last_post_date = datetime.datetime.fromtimestamp(posts[-1]["date"])
+        offset += 100
+
+        last_post_date = datetime.datetime.fromtimestamp(posts[-1]["date"])
 
         return posts
-
-    except KeyError:
-
-        return -1
 
 
 def main(wall_name, posts_date):
