@@ -6,9 +6,9 @@ import json
 
 def search(posts, posts_date):
 
-    if posts == -1:
+    if type(posts) == int:
 
-        return -1
+        return posts
 
     most_likes = 0
 
@@ -41,13 +41,18 @@ def getter(wall_name, posts_date):
 
     posts = []
 
+    last_post = "it`s just a last post"
     last_post_date = datetime.datetime.now()
 
     offset = 0
 
     while (datetime.datetime.now() - last_post_date).days < posts_date:
 
-        parameters = {"domain": wall_name, "count": 10000000, "extended": 1, "offset": offset}
+        parameters = {"domain": wall_name,
+                      "count": 1000000000,
+                      "extended": 1,
+                      "offset": offset
+                      }
 
         try:
 
@@ -57,13 +62,18 @@ def getter(wall_name, posts_date):
             temp_posts = temp_posts[1: len(temp_posts)]
 
         except KeyError:
-            return -1
+            return 400
 
         posts.extend(temp_posts)
+
+        if posts[-1] == last_post:
+            break
 
         offset += 100
 
         last_post_date = datetime.datetime.fromtimestamp(posts[-1]["date"])
+
+        last_post = posts[-1]
 
         return posts
 
